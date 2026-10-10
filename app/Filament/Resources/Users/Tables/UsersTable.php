@@ -33,12 +33,12 @@ class UsersTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn() => auth()->user()->isAdmin()),
                 ]),
             ]);
     }
