@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $password = "password@123";
         if (! $adminExists) {
             $admin = User::factory()->create([
-                'first_name' => 'admin',
+                'name' => 'admin',
                 'password' => Hash::make($password),
                 'email' => 'admin@admin.com',
                 'email_verified_at' => now()
