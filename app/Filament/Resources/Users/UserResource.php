@@ -41,12 +41,6 @@ class UserResource extends Resource
         return UsersTable::configure($table);
     }
 
-    // #[Override]
-    // public static function canView(Model $record): bool
-    // {
-    //     return auth()->user()->isAdmin();
-    // }
-
     #[Override]
     public static function canAccess(): bool
     {
