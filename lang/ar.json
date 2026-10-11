@@ -3,10 +3,14 @@
     "Product Types": "انواع المنتجات",
     "Name": "الاسم",
     "Users": "المستخدمون",
-    "User": "المستخدم",
+    "User": "مستخدم",
     "Email": "البريد الالكتروني",
     "Password": "كلمة المرور",
     "Password Confirmation": "تأكيد كلمة المرور",
     "Update Password": "تحديث كلمة السر",
-    "Role": "المنصب"
+    "Role": "المنصب",
+    "Admin": "منظم",
+    "Client": "عميل",
+    "Reseller": "بائع",
+    "Provider": "مورد"
 }
