@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Sluggable\Attributes\Sluggable;
 
 #[Fillable(
@@ -18,7 +19,6 @@ use Spatie\Sluggable\Attributes\Sluggable;
     "provider_id",
     "type_id"
 )]
-#[Sluggable(form:"name",to:"slug")]
 class Product extends Model
 {
 
@@ -32,4 +32,10 @@ class Product extends Model
         "selling_price" => "decimal:2",
         "wholesale_price" => "decimal:2",
     ];
+
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(ProductType::class);
+    }
 }
