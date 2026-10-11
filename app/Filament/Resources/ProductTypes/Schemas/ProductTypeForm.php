@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ProductTypes\Schemas;
 
 use App\Helpers\ArabicSlugger;
 use App\Models\ProductType;
+use App\Rules\UniqueArabicSlug;
 use App\SluggableArabic;
 use Closure;
 use Filament\Forms\Components\TextInput;
@@ -19,23 +20,7 @@ class ProductTypeForm
             ->components([
                 TextInput::make('name')
                     ->live(onBlur: true)
-                    ->rules([
-                        fn($context, $record): Closure => function (string $attribute, $value, Closure $fail) use ($context, $record) {
-                            $slugged = ArabicSlugger::handle($value);
-                            $exists = ProductType::query()->where("slug", $slugged)->first();
-                            if ($exists) {
-                                if ($context == "create") {
-                                    $fail("نوع المنتج موجود بالفعل");
-                                }
-
-                                if ($context == "edit") {
-                                    if ($record->id != $exists->id) {
-                                        $fail("نوع المنتج موجود بالفعل");
-                                    }
-                                }
-                            }
-                        }
-                    ])
+                    ->rules([fn($context, $record) => new UniqueArabicSlug($context, $record)])
                     ->required(),
             ]);
     }
