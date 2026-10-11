@@ -31,6 +31,18 @@ class ProductTypeResource extends Resource
         return ProductTypesTable::configure($table);
     }
 
+    #[Override]
+    public static function getModelLabel(): string
+    {
+        return __("Product Type");
+    }
+
+    #[Override]
+    public static function getPluralModelLabel(): string
+    {
+        return __("Product Types");
+    }
+
     public static function getRelations(): array
     {
         return [

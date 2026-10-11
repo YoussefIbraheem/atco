@@ -17,41 +17,47 @@ class UserForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(__("Name"))
                     ->required(),
                 TextInput::make('email')
-                    ->label('Email address')
+                    ->label(__("Email"))
                     ->email()
                     ->unique()
                     ->required(),
                 TextInput::make('password')
+                    ->label(__("Password"))
                     ->visibleOn('create')
                     ->password()
                     ->confirmed()
                     ->revealable()
                     ->required(),
                 TextInput::make('password_confirmation')
+                    ->label(__("Password Confirmation"))
                     ->visibleOn('create')
                     ->password()
                     ->revealable()
                     ->required(),
                 Toggle::make('update_password')
+                    ->label(__("Update Password"))
                     ->inlineLabel()
                     ->visibleOn('edit')
-                    ->live()
-                    ->label('Update Password'),
+                    ->live(),
 
-                Section::make('Update Password')
+                Section::make()
+                    ->label(__("Update Password"))
                     ->inlineLabel()
                     ->columns(1)
                     ->visible(fn(Get $get) => $get('update_password'))
                     ->columnSpanFull()
                     ->schema([
                         TextInput::make('password')
+                            ->label(__("Password"))
                             ->password()
                             ->confirmed()
                             ->revealable()
                             ->required(),
                         TextInput::make('password_confirmation')
+                            ->label(__("Password Confirmation"))
                             ->password()
                             ->revealable()
                             ->required(),

@@ -17,9 +17,12 @@ class UsersTable
     {
         return $table
             ->columns([
-                TextColumn::make("name"),
-                TextColumn::make("email"),
+                TextColumn::make("name")
+                    ->label(__("Name")),
+                TextColumn::make("email")
+                    ->label(__("Email")),
                 TextColumn::make("roles.name")
+                    ->label(__("Role"))
                     ->badge()
                     ->color(
                         fn(string $state): string => match ($state) {
@@ -28,7 +31,7 @@ class UsersTable
                             default => 'gray',
                         },
                     )
-                    ->label('Role'),
+                    ->label(__('Role')),
             ])
             ->filters([
                 //
@@ -37,7 +40,6 @@ class UsersTable
                 EditAction::make(),
                 DeleteAction::make()
             ])
-            ->toolbarActions([
-            ]);
+            ->toolbarActions([]);
     }
 }
