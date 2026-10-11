@@ -6,7 +6,7 @@ use App\Traits\SluggableArabic;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Override;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[Fillable("name", "slug")]
 class Store extends Model
@@ -22,5 +22,9 @@ class Store extends Model
         ];
     }
 
-    
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class)->withPivot(['id','quantity']);
+    }
 }
