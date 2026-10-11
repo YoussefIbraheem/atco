@@ -16,11 +16,13 @@ class PartiesTable
         return $table
             ->columns([
                 TextColumn::make("name")
+                    ->label(__("Name"))
                     ->sortable(),
                 TextColumn::make("slug")
                     ->searchable()
                     ->hidden(),
                 TextColumn::make("type")
+                    ->label(__("Type"))
                     ->badge()
                     ->sortable()
 

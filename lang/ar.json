@@ -12,5 +12,8 @@
     "Admin": "منظم",
     "Client": "عميل",
     "Reseller": "بائع",
-    "Provider": "مورد"
+    "Provider": "مورد",
+    "Type":"النوع",
+    "Parties": "الأعضاء",
+    "Party": "عضو"
 }
