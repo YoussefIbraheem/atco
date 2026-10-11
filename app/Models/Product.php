@@ -17,8 +17,7 @@ use Spatie\Sluggable\Attributes\Sluggable;
     "selling_price",
     "wholesale_price",
     "total_amount",
-    "provider_id",
-    "type_id"
+    "product_type_id"
 )]
 class Product extends Model
 {
@@ -45,7 +44,7 @@ class Product extends Model
     }
 
 
-    public function type(): BelongsTo
+    public function productType(): BelongsTo
     {
         return $this->belongsTo(ProductType::class);
     }
