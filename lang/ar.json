@@ -15,5 +15,7 @@
     "Provider": "مورد",
     "Type":"النوع",
     "Parties": "الأعضاء",
-    "Party": "عضو"
+    "Party": "عضو",
+    "Store": "مخزن",
+    "Stores": "المخازن"
 }
