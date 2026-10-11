@@ -26,7 +26,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->brandLogo('ATCO')
+            ->brandName('ATCo')
             ->font('Arial')
             ->path('/')
             ->login()
