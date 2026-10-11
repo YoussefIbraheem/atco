@@ -24,7 +24,6 @@ class ProductFactory extends Factory
             "buying_price" => fake()->randomFloat(2),
             "selling_price" => fake()->randomFloat(2),
             "wholesale_price" => fake()->randomFloat(2),
-            "total_amount" => fake()->randomNumber(),
             "provider_id" => fake()->randomNumber(),
             "type_id" => fake()->randomNumber(),
         ];

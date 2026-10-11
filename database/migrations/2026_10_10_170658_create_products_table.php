@@ -19,7 +19,6 @@ return new class extends Migration
             $table->decimal("buying_price",8,2);
             $table->decimal("selling_price",8,2);
             $table->decimal("wholesale_price",8,2);
-            $table->integer("total_amount");
             $table->foreignId("product_type_id");
             $table->timestamps();
         });

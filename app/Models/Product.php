@@ -16,7 +16,6 @@ use Spatie\Sluggable\Attributes\Sluggable;
     "buying_price",
     "selling_price",
     "wholesale_price",
-    "total_amount",
     "product_type_id"
 )]
 class Product extends Model
