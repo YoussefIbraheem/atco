@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Product;
-use App\SluggableArabic;
+use App\Traits\SluggableArabic;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

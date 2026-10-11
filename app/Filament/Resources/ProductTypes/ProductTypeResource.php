@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Override;
 
 class ProductTypeResource extends Resource
 {
@@ -35,6 +36,13 @@ class ProductTypeResource extends Resource
         return [
             //
         ];
+    }
+
+
+    #[Override]
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()->isAdmin();
     }
 
     public static function getPages(): array

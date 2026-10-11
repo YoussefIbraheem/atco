@@ -43,6 +43,15 @@ class UserResource extends Resource
     }
 
 
+    #[Override]
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
+
+
+
     public static function getRelations(): array
     {
         return [

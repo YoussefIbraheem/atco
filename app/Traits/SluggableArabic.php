@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Traits;
 
 use App\Helpers\ArabicSlugger;
 use Illuminate\Database\Eloquent\Model;

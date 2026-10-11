@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\SluggableArabic;
+use App\Traits\SluggableArabic;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
