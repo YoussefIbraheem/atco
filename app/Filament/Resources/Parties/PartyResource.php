@@ -43,6 +43,19 @@ class PartyResource extends Resource
         return __("Parties");
     }
 
+    #[Override]
+    public static function canAccess(): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
+
+    #[Override]
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
     public static function getRelations(): array
     {
         return [

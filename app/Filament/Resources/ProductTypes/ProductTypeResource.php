@@ -50,6 +50,12 @@ class ProductTypeResource extends Resource
         ];
     }
 
+    #[Override]
+    public static function canAccess(): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
 
     #[Override]
     public static function canDeleteAny(): bool
