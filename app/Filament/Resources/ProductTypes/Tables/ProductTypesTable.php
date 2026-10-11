@@ -17,6 +17,7 @@ class ProductTypesTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('slug')
+                    ->hidden()
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

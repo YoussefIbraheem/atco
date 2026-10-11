@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\SluggableArabic;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,8 @@ use Spatie\Sluggable\Attributes\Sluggable;
 class Product extends Model
 {
 
+    use SluggableArabic;
+
     /**
      * The attributes that should be cast.
      *
@@ -32,6 +35,14 @@ class Product extends Model
         "selling_price" => "decimal:2",
         "wholesale_price" => "decimal:2",
     ];
+
+    protected function sluggable(): array
+    {
+        return [
+            'source' => 'name',
+            'target' => 'slug',
+        ];
+    }
 
 
     public function type(): BelongsTo
