@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable("name", "slug")]
 class Store extends Model
@@ -23,8 +24,13 @@ class Store extends Model
     }
 
 
+    public function productStores(): HasMany
+    {
+        return $this->hasMany(ProductStore::class);
+    }
+
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class)->withPivot(['id','quantity']);
+        return $this->belongsToMany(Product::class)->using(ProductStore::class);
     }
 }

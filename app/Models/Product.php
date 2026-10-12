@@ -4,10 +4,10 @@ namespace App\Models;
 
 use App\Traits\SluggableArabic;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Sluggable\Attributes\Sluggable;
 
 #[Fillable(
@@ -49,8 +49,13 @@ class Product extends Model
         return $this->belongsTo(ProductType::class);
     }
 
+    public function productStores(): HasMany
+    {
+        return $this->hasMany(ProductStore::class);
+    }
+
     public function stores(): BelongsToMany
     {
-        return $this->belongsToMany(Store::class)->withPivot(['id', 'quantity']);
+        return $this->belongsToMany(Store::class)->using(ProductStore::class);
     }
 }

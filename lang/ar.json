@@ -17,5 +17,12 @@
     "Parties": "الأعضاء",
     "Party": "عضو",
     "Store": "مخزن",
-    "Stores": "المخازن"
+    "Stores": "المخازن",
+    "Price":"سعر",
+    "Selling":"البيع",
+    "Buying":"الشراء",
+    "Wholesale":"الجملة",
+    "SKU": "كود المنتج",
+    "Product": "منتج",
+    "Products": "المنتجات"
 }
