@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\SluggableArabic;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,6 +15,7 @@ use Spatie\Sluggable\Attributes\Sluggable;
     "sku",
     "name",
     "slug",
+    "spec",
     "buying_price",
     "selling_price",
     "wholesale_price",
@@ -31,6 +33,7 @@ class Product extends Model
      */
     protected $casts = [
         "buying_price" => "decimal:2",
+        "spec" => "decimal:2",
         "selling_price" => "decimal:2",
         "wholesale_price" => "decimal:2",
     ];
@@ -42,6 +45,32 @@ class Product extends Model
             'target' => 'slug',
         ];
     }
+
+    protected function buyingPrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => $value / 100,
+            set: fn($value) => $value * 100
+        );
+    }
+
+    protected function sellingPrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => $value / 100,
+            set: fn($value) => $value * 100
+        );
+    }
+
+    protected function wholesalePrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => $value / 100,
+            set: fn($value) => $value * 100
+        );
+    }
+
+
 
 
     public function productType(): BelongsTo

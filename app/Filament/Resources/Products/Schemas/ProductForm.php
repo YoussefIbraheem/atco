@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Models\ProductType;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -24,7 +25,15 @@ class ProductForm
                 Select::make('product_type_id')
                     ->label(__("Product Type"))
                     ->relationship('productType', 'name')
+                    ->live(onBlur: true)
                     ->required(),
+
+                TextInput::make('spec')
+                    ->nullable()
+                    ->numeric()
+                    ->visible(fn($get) => $get("product_type_id") != null)
+                    ->suffix(fn($get) => ProductType::query()->find($get("product_type_id"))->unit_measure)
+                    ->label(__("Specification")),
 
                 Grid::make()
                     ->columnSpanFull()
@@ -37,7 +46,7 @@ class ProductForm
                                     ->required()
                                     ->numeric()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn($get,$set)=>self::calculatePrices($get,$set))
+                                    ->afterStateUpdated(fn($get, $set) => self::calculatePrices($get, $set))
                                     ->prefix('EGP'),
                                 TextInput::make('selling_price')
                                     ->label(__("Price") . " " . __("Selling"))
@@ -51,29 +60,16 @@ class ProductForm
                                     ->numeric()
                                     ->prefix('EGP'),
                             ]),
-
-                        Repeater::make("productStores")
-                            ->label(__("Product Distribution"))
-                            ->relationship()
-                            ->schema([
-                                Select::make("store_id")
-                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                    ->preload()
-                                    ->relationship("store", "name"),
-                                TextInput::make("quantity")
-                                    ->numeric()
-                                    ->gt(0)
-
-                            ])
                     ])
 
             ]);
     }
-    private static function calculatePrices($get, $set) {
+    private static function calculatePrices($get, $set)
+    {
         $buyingPrice = $get("buying_price");
         $sellingPrice = $buyingPrice + ($buyingPrice * 0.105);
         $wholeSalePrice = $buyingPrice + ($buyingPrice * 0.35);
-        $set("selling_price",$sellingPrice);
-        $set("wholesale_price",$wholeSalePrice);
+        $set("selling_price", $sellingPrice);
+        $set("wholesale_price", $wholeSalePrice);
     }
 }

@@ -25,5 +25,10 @@
     "SKU": "كود المنتج",
     "Product": "منتج",
     "Products": "المنتجات",
-    "Unit Measure":"وحدة القياس"
+    "Unit Measure":"وحدة القياس",
+    "Product Distribution": "توزيع المنتج",
+    "Storing Place":"مكان التخزين",
+    "Quantity": "الكمية",
+    "Prices":"الاسعار",
+    "Specification": "الخاصية"
 }
