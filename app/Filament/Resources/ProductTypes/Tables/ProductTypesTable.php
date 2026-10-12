@@ -20,16 +20,10 @@ class ProductTypesTable
                 TextColumn::make('slug')
                     ->hidden()
                     ->searchable(),
-                TextColumn::make('created_at')
-                    ->label(__("Created at"))
-                    ->dateTime()
+                TextColumn::make('unit_measure')
+                    ->label(__("Unit Measure"))
+                    ->searchable()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->label(__("Updated at"))
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

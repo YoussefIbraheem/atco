@@ -7,6 +7,7 @@ use App\Models\ProductType;
 use App\Rules\UniqueArabicSlug;
 use App\SluggableArabic;
 use Closure;
+use Dom\Text;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -19,9 +20,12 @@ class ProductTypeForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(__("Name"))
                     ->live(onBlur: true)
                     ->rules([fn($context, $record) => new UniqueArabicSlug($context, $record)])
                     ->required(),
+                TextInput::make('unit_measure')
+                    ->label(__("Unit Measure"))
             ]);
     }
 }
