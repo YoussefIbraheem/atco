@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\Party;
+use App\Models\Product;
+use App\Models\Store;
+use App\Services\StockMovementHandler;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Concerns\RestrictsFileUploadsToSchemaComponents;
+use Filament\Schemas\Contracts\HasSchemas;
+use Livewire\Component;
+
+class RestockProducts extends Component implements HasActions, HasSchemas
+{
+    use InteractsWithActions;
+    use InteractsWithSchemas;
+    use RestrictsFileUploadsToSchemaComponents;
+
+    public function restockProducts(): Action
+    {
+        return Action::make("restockProducts")
+            ->label(__("Restock Products"))
+            ->schema([
+                Select::make("product_id")
+                    ->label(__("Product"))
+                    ->required()
+                    ->preload()
+                    ->options(Product::query()->get()->pluck("name", "id")->toArray()),
+                Select::make("party_id")
+                    ->label(__("Provider"))
+                    ->required()
+                    ->preload()
+                    ->options(Party::query()->get()->pluck("name", "id")->toArray()),
+                Repeater::make("stockDistribution")
+                    ->schema([
+                        Select::make("store_id")
+                            ->label(__("Store"))
+                            ->required()
+                            ->preload()
+                            ->options(Store::query()->get()->pluck("name", "id")->toArray())
+                            ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                        TextInput::make("quantity")
+                            ->label(__("Quantity"))
+                            ->required()
+                            ->numeric()
+                            ->minValue(1)
+
+                    ])
+            ])->action(function ($data) {
+                StockMovementHandler::processRestock(
+                $data["product_id"],
+                $data["party_id"],
+                $data["stockDistribution"],
+                auth()->user()->id);
+            })
+        ;
+    }
+
+    public function render()
+    {
+        return view('livewire.restock-products');
+    }
+}
