@@ -47,7 +47,7 @@ class StockMovementResource extends Resource
     #[Override]
     public static function getPluralModelLabel(): string
     {
-        return __("ٍStock Movements");
+        return __("Stock Movements");
     }
 
 

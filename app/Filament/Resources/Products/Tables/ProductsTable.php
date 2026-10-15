@@ -29,7 +29,7 @@ class ProductsTable
                 TextColumn::make('productType.name')
                     ->label(__("Product Type"))
                     ->searchable(),
-                ColumnGroup::make("Price")
+                ColumnGroup::make(__("Price List"))
                     ->columns([
                         TextColumn::make('buying_price')
                             ->label(__("Buying Price"))

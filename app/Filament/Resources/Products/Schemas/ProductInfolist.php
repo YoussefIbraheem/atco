@@ -17,11 +17,11 @@ class ProductInfolist
                 TextEntry::make('name'),
                 TextEntry::make('slug'),
                 TextEntry::make('buying_price')
-                    ->money(),
+                    ->money("EGP"),
                 TextEntry::make('selling_price')
-                    ->money(),
+                    ->money("EGP"),
                 TextEntry::make('wholesale_price')
-                    ->money(),
+                    ->money("EGP"),
                 TextEntry::make('productType.name')
                     ->label('Product type'),
                 TextEntry::make('created_at')

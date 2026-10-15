@@ -45,6 +45,8 @@
     "Reason": "السبب",
     "Note": "ملحوظات",
     "Issuing Date": "تاريخ الاصدار",
-    "ٍStock Movements": "تحركات البضاعة",
-    "Stock Movement": "تحرك بضاعة"
+    "Stock Movements": "تحركات البضاعة",
+    "Stock Movement": "تحرك بضاعة",
+    "Total Quantity": "اجمالي الكمية",
+    "Price List": "قائمة التسعير"
 }
