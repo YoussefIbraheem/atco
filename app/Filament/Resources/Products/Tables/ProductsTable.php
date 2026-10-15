@@ -6,8 +6,10 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\ColumnGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class ProductsTable
 {
@@ -24,29 +26,28 @@ class ProductsTable
                 TextColumn::make('slug')
                     ->hidden()
                     ->searchable(),
-                TextColumn::make('buying_price')
-                    ->label(__("Price")." ".__("Buying"))
-                    ->money("EGP")
-                    ->sortable(),
-                TextColumn::make('selling_price')
-                    ->label(__("Price")." ".__("Selling"))
-                    ->money("EGP")
-                    ->sortable(),
-                TextColumn::make('wholesale_price')
-                    ->label(__("Price")." ".__("Wholesale"))
-                    ->money("EGP")
-                    ->sortable(),
                 TextColumn::make('productType.name')
                     ->label(__("Product Type"))
                     ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ColumnGroup::make("Price")
+                    ->columns([
+                        TextColumn::make('buying_price')
+                            ->label(__("Buying Price"))
+                            ->money("EGP")
+                            ->sortable(),
+                        TextColumn::make('selling_price')
+                            ->label(__("Selling Price"))
+                            ->money("EGP")
+                            ->sortable(),
+                        TextColumn::make('wholesale_price')
+                            ->label(__("Wholesale Price"))
+                            ->money("EGP")
+                            ->sortable(),
+                    ])->alignCenter(),
+                TextColumn::make("totalQuantity")
+                    ->label(__("Total Quantity"))
+                    ->state(fn (Model $record)=> $record->stores->sum("pivot.quantity"))
+                //->formatStateUsing(fn($record)=>dd($record->stores))
             ])
             ->filters([
                 //
