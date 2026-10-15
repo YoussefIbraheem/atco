@@ -78,13 +78,8 @@ class Product extends Model
         return $this->belongsTo(ProductType::class);
     }
 
-    public function productStores(): HasMany
-    {
-        return $this->hasMany(ProductStore::class);
-    }
-
     public function stores(): BelongsToMany
     {
-        return $this->belongsToMany(Store::class)->using(ProductStore::class);
+        return $this->belongsToMany(Store::class)->withPivot("quantity");
     }
 }
