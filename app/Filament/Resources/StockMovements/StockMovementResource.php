@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Override;
 
 class StockMovementResource extends Resource
 {
@@ -37,12 +38,27 @@ class StockMovementResource extends Resource
         return StockMovementsTable::configure($table);
     }
 
+    #[Override]
+    public static function getModelLabel(): string
+    {
+        return __("Stock Movement");
+    }
+
+    #[Override]
+    public static function getPluralModelLabel(): string
+    {
+        return __("ٍStock Movements");
+    }
+
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
+
+
 
     public static function getPages(): array
     {

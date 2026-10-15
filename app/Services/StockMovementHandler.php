@@ -21,7 +21,8 @@ class StockMovementHandler
                 "store_id" => $data["store_id"],
                 "quantity" => $data["quantity"],
                 "reason" => StockReason::PURCHASE->value,
-                "user_id" => $userId
+                "user_id" => $userId,
+                "created_at" => now()
             ];
             $distributionInfo[] = [
                 "product_id" => $productId,

@@ -38,5 +38,13 @@
     "Handover": "تسليم",
     "Handover Return": "مرتجع تسليم",
     "Transfer": "تحريك",
-    "Adjustment": "تعديل"
+    "Adjustment": "تعديل",
+    "Buying Price": "سعر البيع",
+    "Selling Price": "سعر الشراء",
+    "Wholesale Price": "سعر الجملة",
+    "Reason": "السبب",
+    "Note": "ملحوظات",
+    "Issuing Date": "تاريخ الاصدار",
+    "ٍStock Movements": "تحركات البضاعة",
+    "Stock Movement": "تحرك بضاعة"
 }

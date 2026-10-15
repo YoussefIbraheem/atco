@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\StockReason;
 use App\Models\Party;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Override;
 
 #[Fillable(
     "product_id",
@@ -23,6 +25,15 @@ class StockMovement extends Model
 {
     /** @use HasFactory<\Database\Factories\StockMovementFactory> */
     use HasFactory;
+
+
+    #[Override]
+    protected function casts()
+    {
+        return [
+            "reason" => StockReason::class
+        ];
+    }
 
     public function product(): BelongsTo
     {

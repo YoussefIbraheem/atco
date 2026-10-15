@@ -17,17 +17,28 @@ class StockMovementsTable
         return $table
             ->columns([
                 TextColumn::make("product.name")
-                    ->label(__("Product")),
+                    ->label(__("Product"))
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make("store.name")
-                    ->label(__("Store")),
+                    ->label(__("Store"))
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make("quantity")
-                    ->label(__("Quantity")),
+                    ->label(__("Quantity"))
+                    ->sortable(),
                 TextColumn::make("reason")
-                    ->label(__("Reason")),
+                    ->label(__("Reason"))
+                    ->sortable()
+                    ->searchable()
+                    ->badge(),
                 TextColumn::make("note")
                     ->label(__("Note")),
                 TextColumn::make("user.name")
                     ->label(__("User")),
+                TextColumn::make("created_at")
+                    ->label(__("Issuing Date"))
+                    ->date()
 
             ])
             ->filters([
