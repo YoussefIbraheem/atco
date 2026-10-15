@@ -5,13 +5,16 @@ namespace App\Livewire;
 use App\Models\Party;
 use App\Models\Product;
 use App\Models\Store;
-use App\Services\StockMovementHandler;
+use App\Services\DTOs\StockEntry;
+use App\Services\StockHandler;
+use App\Services\StockLedger;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Concerns\RestrictsFileUploadsToSchemaComponents;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -54,12 +57,20 @@ class RestockProducts extends Component implements HasActions, HasSchemas
 
                     ])
             ])->action(function ($data) {
-                StockMovementHandler::processRestock(
-                $data["product_id"],
-                $data["party_id"],
-                $data["stockDistribution"],
-                auth()->user()->id);
-            })
+                $ledger = new StockLedger();
+                $userId = auth()->user()->id;
+                (new StockHandler($ledger))->restock(
+                    $data["product_id"],
+                    $data["party_id"],
+                    $userId,
+                    $data["stockDistribution"]
+                );
+            })->successNotification(
+                Notification::make()
+                    ->success()
+                    ->title(__("Products Stocked"))
+                    ->body(__("Products Stocked successfully"))
+            )
         ;
     }
 
