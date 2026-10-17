@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\PartyTypeEnum;
 use App\Models\Party;
 use App\Models\Product;
 use App\Models\Store;
@@ -40,8 +41,9 @@ class RestockProducts extends Component implements HasActions, HasSchemas
                     ->label(__("Provider"))
                     ->required()
                     ->preload()
-                    ->options(Party::query()->get()->pluck("name", "id")->toArray()),
+                    ->options(Party::query()->where("type",PartyTypeEnum::PRODVIDER)->get()->pluck("name", "id")->toArray()),
                 Repeater::make("stockDistribution")
+                    ->label(__("Stock Distribution"))
                     ->schema([
                         Select::make("store_id")
                             ->label(__("Store"))
@@ -56,10 +58,11 @@ class RestockProducts extends Component implements HasActions, HasSchemas
                             ->minValue(1)
 
                     ])
+
             ])->action(function ($data) {
                 $ledger = new StockLedger();
                 $userId = auth()->user()->id;
-                (new StockHandler($ledger))->restock(
+                (new StockHandler($ledger))->processPurchase(
                     $data["product_id"],
                     $data["party_id"],
                     $userId,

@@ -11,7 +11,7 @@ final class StockHandler
 
     public function __construct(private StockLedger $ledger) {}
 
-    public function restock(int $productId, int $partyId, int $userId, array $distribution): void
+    public function processPurchase(int $productId, int $partyId, int $userId, array $distribution): void
     {
         DB::transaction(function () use ($productId, $partyId, $userId, $distribution) {
             foreach ($distribution as $row) {
@@ -22,6 +22,24 @@ final class StockHandler
                     userId: $userId,
                     quantity: $row["quantity"],
                     storeId: $row["store_id"]
+                );
+
+                $this->ledger->record($entry);
+            }
+        });
+    }
+
+    public function processSale(int $partyId, int $userId, array $distribution)
+    {
+        DB::transaction(function () use ($partyId, $userId, $distribution) {
+            foreach ($distribution as $row) {
+                $entry = new StockEntry(
+                    reason: StockReason::SALE,
+                    productId: $row["stockDistribution"],
+                    storeId: $row["store_id"],
+                    partyId: $partyId,
+                    userId: $userId,
+                    quantity: $row["quantity"],
                 );
 
                 $this->ledger->record($entry);

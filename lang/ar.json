@@ -39,8 +39,8 @@
     "Handover Return": "مرتجع تسليم",
     "Transfer": "تحريك",
     "Adjustment": "تعديل",
-    "Buying Price": "سعر البيع",
-    "Selling Price": "سعر الشراء",
+    "Buying Price": "سعر الشراء",
+    "Selling Price": "سعر البيع",
     "Wholesale Price": "سعر الجملة",
     "Reason": "السبب",
     "Note": "ملحوظات",
@@ -48,5 +48,15 @@
     "Stock Movements": "تحركات البضاعة",
     "Stock Movement": "تحرك بضاعة",
     "Total Quantity": "اجمالي الكمية",
-    "Price List": "قائمة التسعير"
+    "Price List": "قائمة التسعير",
+    "EGP": "ج.م",
+    "Total Selling Price": "اجمالي سعر البيع",
+    "Price Per Unit": "سعر الوحدة",
+    "Profit":"الربح",
+    "Client Type": "نوع العميل",
+    "Products List": "قائمة المنتجات",
+    "Total":"المجموع",
+    "Place Sale Order": "اصدار امر بيع",
+    "Restock Products":  "تخزين منتجات",
+    "Stock Distribution":"توزيع المخزون"
 }
