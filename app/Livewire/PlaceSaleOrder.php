@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\AmountTypeEnum;
 use App\Enums\PartyTypeEnum;
 use App\Models\Party;
 use App\Models\Product;
@@ -13,8 +14,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Components\Group;
-use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Concerns\RestrictsFileUploadsToSchemaComponents;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -26,169 +29,253 @@ class PlaceSaleOrder extends Component implements HasActions, HasSchemas
     use InteractsWithSchemas;
     use RestrictsFileUploadsToSchemaComponents;
 
+    private const CURRENCY = 'EGP';
+
+    private const DISCOUNT_FIXED = 'fixed';
+    private const DISCOUNT_PERCENTAGE = 'percentage';
+
+    private const TAX_FIXED = 'fixed';
+    private const TAX_PERCENTAGE = 'percentage';
+
+    private const ROOT = '../../';
+
     public function placeSaleOrder(): Action
     {
-        return Action::make("placeSaleOrder")
-            ->label(__("Place Sale Order"))
+        return Action::make('placeSaleOrder')
+            ->label(__('Place Sale Order'))
             ->schema([
-                Select::make("party_id")
-                    ->label(__("Client Type"))
-                    ->required()
-                    ->options(Party::query()->where("type", PartyTypeEnum::CLIENT)->pluck("name", "id")->toArray()),
-
-                Repeater::make("distributionData")
-                    ->label(__("Products List"))
-                    ->columnSpanFull()
-                    ->columns(3)
-                    ->required()
-                    ->live(debounce: 500)
-                    ->afterStateUpdated(function ($set, $get) {
-                        self::executeTotal($set, $get);
-                    })
-                    ->schema([
-                        Select::make("product_id")
-                            ->label(__("Product"))
-                            ->required()
-                            ->columnSpan(2)
-                            ->live()
-                            ->options(Product::query()->pluck("name", "id")->toArray())
-                            ->afterStateUpdated(function ($set, $get) {
-                                self::executeProductsDistribution($set, $get);
-                            }),
-                        TextInput::make("quantity")
-                            ->label(__("Quantity"))
-                            ->required()
-                            ->live()
-                            ->default(1)
-                            ->gte(1)
-                            ->afterStateUpdated(function ($set, $get) {
-                                self::executeProductsDistribution($set, $get);
-                            })
-                            ->columnSpan(1),
-                        Fieldset::make(__("Price Per Unit"))
-                            ->schema([
-                                TextInput::make("buying_price")
-                                    ->label(__("Buying Price"))
-                                    ->numeric()
-                                    ->readOnly()
-                                    ->disabled()
-                                    ->minValue(1)
-                                    ->columnOrder(1)
-                                    ->suffix(__("EGP")),
-                                TextInput::make("wholesale_price")
-                                    ->label(__("Wholesale Price"))
-                                    ->numeric()
-                                    ->readOnly()
-                                    ->disabled()
-                                    ->minValue(1)
-                                    ->columnOrder(2)
-                                    ->suffix(__("EGP")),
-                                TextInput::make("selling_price")
-                                    ->label(__("Selling Price"))
-                                    ->numeric()
-                                    ->readOnly()
-                                    ->disabled()
-                                    ->minValue(1)
-                                    ->columnOrder(3)
-                                    ->suffix(__("EGP")),
-                            ])->columnSpanFull()
-                            ->columns(3),
-                        TextInput::make("total_selling_price")
-                            ->label(__("Total Selling Price"))
-                            ->required()
-                            ->numeric()
-                            ->minValue(1)
-                            ->columnOrder(3)
-                            ->live(onBlur: true)
-                            ->gt("buying_price")
-                            ->afterStateUpdated(function ($set, $get) {
-                                self::executeProfit($set, $get);
-                            })
-                            ->suffix(__("EGP")),
-                        TextInput::make("profit")
-                            ->label(__("Profit"))
-                            ->columnOrder(4)
-                            ->readOnly()
-                            ->disabled()
-                            ->suffix(__("EGP"))
-                    ])
-                    ->columnSpanFull()
-                    ->columns(3),
-
-                TextEntry::make("total")
-                    ->money("EGP")
-
-            ])->action(function ($data) {
+                self::clientField(),
+                self::productsRepeater(),
+                self::summaryGroup(),
+            ])
+            ->action(function (array $data): void {
                 dd($data);
             });
     }
 
-    private static function executeProfit($set, $get)
+    private static function clientField(): Select
     {
-
-        $buyingPrice = (float) $get("buying_price");
-        $sellingPrice = (float) $get("selling_price");
-        $quantity = (int) $get("quantity");
-        $profit = self::determineProfit($buyingPrice, $sellingPrice, $quantity);
-        $set("profit", $profit);
+        return Select::make('party_id')
+            ->label(__('Client'))
+            ->required()
+            ->options(
+                fn(): array => Party::query()
+                    ->where('type', PartyTypeEnum::CLIENT)
+                    ->pluck('name', 'id')
+                    ->toArray()
+            );
     }
 
-    private static function executeTotal($set, $get)
+    private static function productsRepeater(): Repeater
     {
-        $data = $get("distributionData");
-        $total = self::determineTotal($data);
-        $set("total", $total);
+        return Repeater::make('distributionData')
+            ->label(__('Products List'))
+            ->required()
+            ->columns(3)
+            ->columnSpanFull()
+            ->live(debounce: 500)
+            ->afterStateUpdated(fn(Get $get, Set $set) => self::refreshTotal($get, $set))
+            ->schema([
+                Select::make('product_id')
+                    ->label(__('Product'))
+                    ->required()
+                    ->columnSpan(2)
+                    ->live()
+                    ->options(fn(): array => Product::query()->pluck('name', 'id')->toArray())
+                    ->afterStateUpdated(fn(Get $get, Set $set) => self::refreshItem($get, $set)),
+
+                TextInput::make('quantity')
+                    ->label(__('Quantity'))
+                    ->required()
+                    ->numeric()
+                    ->integer()
+                    ->minValue(1)
+                    ->default(1)
+                    ->live()
+                    ->columnSpan(1)
+                    ->afterStateUpdated(fn(Get $get, Set $set) => self::refreshItem($get, $set)),
+
+                Fieldset::make(__('Price Per Unit'))
+                    ->columns(4)
+                    ->columnSpanFull()
+                    ->schema([
+                        TextInput::make('buying_price')
+
+                            ->label(__('Buying Price'))
+                            ->readonly()
+                            ->disabled()
+                            ->suffix(__(self::CURRENCY)),
+                        TextInput::make('wholesale_price')
+
+                            ->label(__('Wholesale Price'))
+                            ->readonly()
+                            ->disabled()
+                            ->suffix(__(self::CURRENCY)),
+                        TextInput::make('selling_price')
+
+                            ->label(__('Selling Price'))
+                            ->readonly()
+                            ->disabled()
+                            ->suffix(__(self::CURRENCY)),
+                        TextInput::make('quantity_in_stock')
+
+                            ->label(__('Quantity in Stock'))->readonly()
+                            ->disabled(),
+                    ]),
+
+
+                TextInput::make('total_selling_price')
+                    ->label(__('Total Selling Price'))
+                    ->required()
+                    ->numeric()
+                    ->minValue(1)
+                    ->suffix(__(self::CURRENCY))
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn(Get $get, Set $set) => self::refreshProfit($get, $set)),
+
+                TextInput::make('profit')
+                    ->label(__('Profit'))
+                    ->suffix(__(self::CURRENCY))
+                    ->readOnly(),
+            ]);
     }
 
-
-
-    private static function determineProfit($buyingPrice, $sellingPrice, $quantity): float
+    private static function summaryGroup(): Group
     {
-        $totalSellingPrice = (float) ($sellingPrice * $quantity);
-        $totalBuyingPrice = (float) ($buyingPrice * $quantity);
-        $profit = (float) ($totalSellingPrice - $totalBuyingPrice);
+        return Group::make([
+            FusedGroup::make([
+                Select::make('discount_type')
+                    ->label(__('Discount Type'))
+                    ->placeholder(__('Discount Type'))
+                    ->options(AmountTypeEnum::class)
+                    ->live()
+                    ->afterStateUpdated(fn(Get $get, Set $set) => self::refreshTotal($get, $set)),
 
-        return $profit;
+                TextInput::make('discount_amount')
+                    ->label(__('Discount Amount'))
+                    ->placeholder(__('Discount Amount'))
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(fn(Get $get): ?int => $get('discount_type') === AmountTypeEnum::PERCENTAGE ? 100 : null)
+                    ->suffix(fn(Get $get): string => $get('discount_type') === AmountTypeEnum::PERCENTAGE
+                        ? '%'
+                        : __(self::CURRENCY))
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn(Get $get, Set $set) => self::refreshTotal($get, $set)),
+            ])->label(__("Discount")),
+
+            FusedGroup::make([
+                Select::make('tax_type')
+                    ->label(__('Tax Type'))
+                    ->placeholder(__('Tax Type'))
+                    ->options(AmountTypeEnum::class)
+                    ->live()
+                    ->afterStateUpdated(fn(Get $get, Set $set) => self::refreshTotal($get, $set)),
+
+                TextInput::make('tax_amount')
+                    ->label(__('Tax Amount'))
+                    ->placeholder(__('Tax Amount'))
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(fn(Get $get): ?int => $get('tax_type') === AmountTypeEnum::FIXED ? 100 : null)
+                    ->suffix(fn(Get $get): string => $get('tax_type') === AmountTypeEnum::PERCENTAGE
+                        ? '%'
+                        : __(self::CURRENCY))
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn(Get $get, Set $set) => self::refreshTotal($get, $set)),
+            ])->label(__("Tax")),
+
+            TextEntry::make('total')
+                ->label(__('Total'))
+                ->default('0.00')
+                ->money(self::CURRENCY)
+                ->columnSpanFull(),
+        ])->columns(2);
     }
 
-    private static function executeProductsDistribution($set, $get): void
+    private static function refreshItem(Get $get, Set $set): void
     {
-        $productId = (int) $get("product_id");
-        $quantity = (int) $get("quantity");
-        $product = Product::query()->findOrFail($productId);
-        $buyingPrice = (float) $product->buying_price;
-        $wholesalePrice = (float) $product->wholesale_price;
-        $sellingPrice = (float) ($product->selling_price);
-        $profit = self::determineProfit($buyingPrice, $sellingPrice, $quantity);
-        $totalSellingPrice = (float) ($sellingPrice * $quantity);
+        $product = Product::query()->find($get('product_id'));
 
-        $set("buying_price", $buyingPrice);
-        $set("wholesale_price", $wholesalePrice);
-        $set("selling_price", $sellingPrice);
-        $set("total_selling_price", $totalSellingPrice);
-        $set("profit", $profit);
-
-        $distributionData = $get("../../distributionData");
-        $total =  self::determineTotal($distributionData);
-        $set("../../total", $total);
-    }
-
-    private static function determineTotal(array $distributionData): float
-    {
-        $total = 0;
-
-        foreach ($distributionData as $data) {
-            $price = (float) $data["total_selling_price"];
-
-            if (!$price) {
-                continue;
+        if (! $product) {
+            foreach (['buying_price', 'wholesale_price', 'selling_price', 'quantity_in_stock', 'total_selling_price', 'profit'] as $field) {
+                $set($field, null);
             }
 
-            $total += $price;
+            self::refreshTotal($get, $set, self::ROOT);
+
+            return;
         }
 
-        return (float) $total;
+        $quantity = max(1, (int) $get('quantity'));
+        $buyingPrice = (float) $product->buying_price;
+        $sellingPrice = (float) $product->selling_price;
+        $totalSellingPrice = $sellingPrice * $quantity;
+
+        $set('buying_price', $buyingPrice);
+        $set('wholesale_price', (float) $product->wholesale_price);
+        $set('selling_price', $sellingPrice);
+        $set('quantity_in_stock', $product->quantityInStock());
+        $set('total_selling_price', $totalSellingPrice);
+        $set('profit', self::calculateProfit($totalSellingPrice, $buyingPrice, $quantity));
+
+        self::refreshTotal($get, $set, self::ROOT);
     }
+
+    private static function refreshProfit(Get $get, Set $set): void
+    {
+        $set('profit', self::calculateProfit(
+            (float) $get('total_selling_price'),
+            (float) $get('buying_price'),
+            max(1, (int) $get('quantity')),
+        ));
+
+        self::refreshTotal($get, $set, self::ROOT);
+    }
+
+    private static function refreshTotal(Get $get, Set $set, string $root = ''): void
+    {
+        $set($root . 'total', self::calculateTotal(
+            $get($root . 'distributionData') ?? [],
+            $get($root . 'discount_type'),
+            $get($root . 'discount_amount'),
+            $get($root . 'tax_type'),
+            $get($root . 'tax_amount'),
+        ));
+    }
+
+    private static function calculateProfit(float $totalSellingPrice, float $buyingPrice, int $quantity): float
+    {
+        return $totalSellingPrice - ($buyingPrice * $quantity);
+    }
+
+    private static function calculateTotal(array $items, ?AmountTypeEnum $discountType, null|int|float|string $discountAmount, ?AmountTypeEnum $taxType, null|int|float|string $taxAmount): float
+    {
+        $subtotal = collect($items)->sum(fn(array $item): float => (float) ($item['total_selling_price'] ?? 0));
+
+        $discount = self::calculate($subtotal, $discountType, (float) $discountAmount);
+        $tax = self::calculate($subtotal, $taxType, (float) $taxAmount);
+
+        return max(0.0, $subtotal + $tax - $discount);
+    }
+
+    private static function calculate(float $subtotal, ?AmountTypeEnum $type, float $amount): float
+    {
+        return match ($type) {
+            AmountTypeEnum::PERCENTAGE => AmountTypeEnum::PERCENTAGE->resolve($subtotal,$amount) ,
+            AmountTypeEnum::FIXED =>AmountTypeEnum::FIXED->resolve($subtotal,$amount),
+            default => 0.0,
+        };
+    }
+
+    // private static function calculateTax(float $subtotal, ?string $taxType, float $taxAmount): float
+    // {
+    //     return match ($taxType) {
+    //          AmountTypeEnum::PERCENTAGE => AmountTypeEnum::PERCENTAGE->resolve($subtotal,$discountAmount) ,
+    //         AmountTypeEnum::FIXED =>AmountTypeEnum::FIXED->resolve($subtotal,$discountAmount),
+    //         default => 0.0,
+    //     };
+    // }
 
     public function render()
     {

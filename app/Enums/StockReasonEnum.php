@@ -6,14 +6,14 @@ use Filament\Support\Contracts\HasLabel;
 use Illuminate\Contracts\Support\Htmlable;
 use Override;
 
-enum StockReason: string implements HasLabel
+enum StockReasonEnumEnum: string implements HasLabel
 {
     case PURCHASE = 'purchase';
     case SALE = 'sale';
-    case CUSTOMERRETURN = 'customer_return';
-    case SUPPLIERRETUREN = 'supplier_return';
+    case CUSTOMER_RETURN = 'customer_return';
+    case SUPLLIER_RETURN = 'supplier_return';
     case HANDOVER = 'handover';
-    case HANDOVERRETURN = 'handover_return';
+    case HANDOVER_RETURN = 'handover_return';
     case TRANSFER = 'transfer';
     case ADJUSTMENT = 'adjustment';
 
@@ -23,10 +23,10 @@ enum StockReason: string implements HasLabel
         return match ($this) {
             self::PURCHASE => __("Purchase"),
             self::SALE => __("Sale"),
-            self::CUSTOMERRETURN => __("Customer Return"),
-            self::SUPPLIERRETUREN => __("Supplier Return"),
+            self::CUSTOMER_RETURN => __("Customer Return"),
+            self::SUPLLIER_RETURN => __("Supplier Return"),
             self::HANDOVER => __("Handover"),
-            self::HANDOVERRETURN => __("Handover Return"),
+            self::HANDOVER_RETURN => __("Handover Return"),
             self::TRANSFER => __("Transfer"),
             self::ADJUSTMENT => __("Adjustment"),
         };

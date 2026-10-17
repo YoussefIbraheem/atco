@@ -52,11 +52,18 @@
     "EGP": "ج.م",
     "Total Selling Price": "اجمالي سعر البيع",
     "Price Per Unit": "سعر الوحدة",
-    "Profit":"الربح",
+    "Profit": "الربح",
     "Client Type": "نوع العميل",
     "Products List": "قائمة المنتجات",
-    "Total":"المجموع",
+    "Total": "المجموع",
     "Place Sale Order": "اصدار امر بيع",
-    "Restock Products":  "تخزين منتجات",
-    "Stock Distribution":"توزيع المخزون"
+    "Restock Products": "تخزين منتجات",
+    "Stock Distribution": "توزيع المخزون",
+    "Quantity in Stock": "الكميه المخزنة",
+    "Discount Type": "نوع الخصم",
+    "Tax Type": "نوع الضريبة",
+    "Discount Amount": "قيمة الخصم",
+    "Tax Amount": "قيمة الضريبة",
+    "Discount" : "خصم",
+    "Tax" : "ضريبة"
 }

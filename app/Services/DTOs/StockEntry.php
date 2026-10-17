@@ -2,13 +2,13 @@
 
 namespace App\Services\DTOs;
 
-use App\Enums\StockReason;
+use App\Enums\StockReasonEnum;
 
 readonly class StockEntry
 {
 
     public function __construct(
-        public StockReason $reason,
+        public StockReasonEnum $reason,
         public int $productId,
         public int $storeId,
         public int $quantity,
