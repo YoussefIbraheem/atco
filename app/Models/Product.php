@@ -82,4 +82,9 @@ class Product extends Model
     {
         return $this->belongsToMany(Store::class)->withPivot("quantity");
     }
+
+    public function quantityInStock()
+    {
+        return $this->stores()->get()->pluck("pivot")->sum("quantity");
+    }
 }

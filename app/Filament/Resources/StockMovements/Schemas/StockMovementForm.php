@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\StockMovements\Schemas;
 
-use App\Enums\StockReason;
+use App\Enums\StockReasonEnum;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -27,11 +27,11 @@ class StockMovementForm
                     ->label(__("Quantity"))
                     ->numeric(),
                 Select::make("reason")
-                    ->enum(StockReason::class)
-                    ->options(StockReason::class),
+                    ->enum(StockReasonEnum::class)
+                    ->options(StockReasonEnum::class),
                 Select::make("party_id")
                     ->label(__("Party"))
-                    ->relationship("party","name")
+                    ->relationship("party", "name")
                     ->preload()
                     ->searchable()
             ]);

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\StockReason;
+use App\Enums\StockReasonEnum;
 use App\Models\Party;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -31,7 +31,7 @@ class StockMovement extends Model
     protected function casts()
     {
         return [
-            "reason" => StockReason::class
+            "reason" => StockReasonEnum::class
         ];
     }
 
