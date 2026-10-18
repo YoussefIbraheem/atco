@@ -3,9 +3,17 @@
 
         <div>
 
-            <div> @livewire('restock-products')</div>
+            <div>
+                <x-filament::button wire:click="restockProducts">
+                    {{ __('Restock Products') }}
+                </x-filament::button>
+            </div>
             <br>
-            <div>@livewire('place-sale-order')</div>
+            <div>
+                <x-filament::button wire:click="placeSaleOrder">
+                    {{ __('Place Sale Order') }}
+                </x-filament::button>
+            </div>
 
         </div>
 
