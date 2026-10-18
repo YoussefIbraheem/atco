@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Filament\Pages;
 
 use App\Enums\AmountTypeEnum;
 use App\Enums\PartyTypeEnum;
 use App\Models\Party;
 use App\Models\Product;
-use Filament\Actions\Action;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
+use Filament\Pages\Page;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Concerns\RestrictsFileUploadsToSchemaComponents;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -16,42 +16,45 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Components\Group;
+use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
-use Filament\Schemas\Concerns\InteractsWithSchemas;
-use Filament\Schemas\Concerns\RestrictsFileUploadsToSchemaComponents;
-use Filament\Schemas\Contracts\HasSchemas;
-use Livewire\Component;
+use Filament\Schemas\Schema;
 
-class PlaceSaleOrder extends Component implements HasActions, HasSchemas
+class PlaceSaleOrder extends Page implements HasSchemas
+
 {
-    use InteractsWithActions;
     use InteractsWithSchemas;
     use RestrictsFileUploadsToSchemaComponents;
 
+    protected string $view = 'filament.pages.place-sale-order';
+    protected static ?string $slug = 'sale-order/place';
+    protected static bool $shouldRegisterNavigation = false;
+
+
     private const CURRENCY = 'EGP';
-
-    private const DISCOUNT_FIXED = 'fixed';
-    private const DISCOUNT_PERCENTAGE = 'percentage';
-
-    private const TAX_FIXED = 'fixed';
-    private const TAX_PERCENTAGE = 'percentage';
 
     private const ROOT = '../../';
 
-    public function placeSaleOrder(): Action
+    public function mount(): void
     {
-        return Action::make('placeSaleOrder')
-            ->label(__('Place Sale Order'))
-            ->schema([
-                self::clientField(),
-                self::productsRepeater(),
-                self::summaryGroup(),
-            ])
-            ->action(function (array $data): void {
-                dd($data);
-            });
+        $this->form->fill();
     }
+
+    public function create(): void
+    {
+        dd($this->form->getState());
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema->components([
+            self::clientField(),
+            self::productsRepeater(),
+            self::summaryGroup(),
+        ]);
+    }
+
 
     private static function clientField(): Select
     {
@@ -193,6 +196,7 @@ class PlaceSaleOrder extends Component implements HasActions, HasSchemas
         ])->columns(2);
     }
 
+
     private static function refreshItem(Get $get, Set $set): void
     {
         $product = Product::query()->find($get('product_id'));
@@ -262,23 +266,10 @@ class PlaceSaleOrder extends Component implements HasActions, HasSchemas
     private static function calculate(float $subtotal, ?AmountTypeEnum $type, float $amount): float
     {
         return match ($type) {
-            AmountTypeEnum::PERCENTAGE => AmountTypeEnum::PERCENTAGE->resolve($subtotal,$amount) ,
-            AmountTypeEnum::FIXED =>AmountTypeEnum::FIXED->resolve($subtotal,$amount),
+            AmountTypeEnum::PERCENTAGE => AmountTypeEnum::PERCENTAGE->resolve($subtotal, $amount),
+            AmountTypeEnum::FIXED => AmountTypeEnum::FIXED->resolve($subtotal, $amount),
             default => 0.0,
         };
     }
 
-    // private static function calculateTax(float $subtotal, ?string $taxType, float $taxAmount): float
-    // {
-    //     return match ($taxType) {
-    //          AmountTypeEnum::PERCENTAGE => AmountTypeEnum::PERCENTAGE->resolve($subtotal,$discountAmount) ,
-    //         AmountTypeEnum::FIXED =>AmountTypeEnum::FIXED->resolve($subtotal,$discountAmount),
-    //         default => 0.0,
-    //     };
-    // }
-
-    public function render()
-    {
-        return view('livewire.place-sale-order');
-    }
 }

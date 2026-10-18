@@ -64,6 +64,8 @@
     "Tax Type": "نوع الضريبة",
     "Discount Amount": "قيمة الخصم",
     "Tax Amount": "قيمة الضريبة",
-    "Discount" : "خصم",
-    "Tax" : "ضريبة"
+    "Discount": "خصم",
+    "Tax": "ضريبة",
+    "Fixed": "ثابتة",
+    "Percentage": "نسبة مئوية"
 }

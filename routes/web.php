@@ -1,7 +1,5 @@
 <?php
 
+use App\Livewire\PlaceSaleOrder;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
