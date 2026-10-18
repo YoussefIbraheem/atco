@@ -11,7 +11,7 @@ final class StockHandler
 
     public function __construct(private StockLedger $ledger) {}
 
-    public function processPurchase(int $productId, int $partyId, int $userId, array $distribution): void
+    public function restock(int $productId, int $partyId, int $userId, array $distribution): void
     {
         DB::transaction(function () use ($productId, $partyId, $userId, $distribution) {
             foreach ($distribution as $row) {

@@ -39,8 +39,8 @@
     "Handover Return": "مرتجع تسليم",
     "Transfer": "تحريك",
     "Adjustment": "تعديل",
-    "Buying Price": "سعر الشراء",
-    "Selling Price": "سعر البيع",
+    "Buying Price": "سعر البيع",
+    "Selling Price": "سعر الشراء",
     "Wholesale Price": "سعر الجملة",
     "Reason": "السبب",
     "Note": "ملحوظات",
@@ -48,7 +48,6 @@
     "Stock Movements": "تحركات البضاعة",
     "Stock Movement": "تحرك بضاعة",
     "Total Quantity": "اجمالي الكمية",
-    "Price List": "قائمة التسعير",
     "EGP": "ج.م",
     "Total Selling Price": "اجمالي سعر البيع",
     "Price Per Unit": "سعر الوحدة",
@@ -67,5 +66,6 @@
     "Discount": "خصم",
     "Tax": "ضريبة",
     "Fixed": "ثابتة",
-    "Percentage": "نسبة مئوية"
+    "Percentage": "نسبة مئوية",
+    "Price List": "قائمة التسعير"
 }
