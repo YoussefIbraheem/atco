@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasLabel;
 use Illuminate\Contracts\Support\Htmlable;
 use Override;
 
-enum StockReasonEnumEnum: string implements HasLabel
+enum StockReasonEnum: string implements HasLabel
 {
     case PURCHASE = 'purchase';
     case SALE = 'sale';
